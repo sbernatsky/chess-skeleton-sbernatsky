@@ -1,11 +1,16 @@
 package chess;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+
 import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Mockito.*;
 import static junit.framework.Assert.*;
 
 /**
@@ -48,5 +53,32 @@ public class GameStateTest {
         Piece blackQueen = state.getPieceAt("d8");
         assertTrue("A queen should be at d8", blackQueen instanceof Queen);
         assertEquals("The queen at d8 should be owned by Black", Player.Black, blackQueen.getOwner());
+    }
+
+    @Test
+    public void testMoves() throws Exception {
+        Piece whitePiece = mock(Piece.class);
+        Piece blackPiece = mock(Piece.class);
+        Position whitePosition = new Position("a1");
+        Position blackPosition = new Position("d8");
+        
+        // put pieces into game state via reflection
+        Method placePieceMethod = GameState.class.getDeclaredMethod("placePiece", Piece.class, Position.class);
+        placePieceMethod.setAccessible(true);
+        placePieceMethod.invoke(state, whitePiece, whitePosition);
+        placePieceMethod.invoke(state, blackPiece, blackPosition);
+
+        when(whitePiece.getOwner()).thenReturn(Player.White);
+        when(blackPiece.getOwner()).thenReturn(Player.Black);
+        when(whitePiece.getMoves(state, whitePosition)).thenReturn(Collections.singleton(new Position("h8")));
+        when(blackPiece.getMoves(state, blackPosition)).thenReturn(Collections.singleton(new Position("h1")));
+
+        // should be one move for white player
+        Collection<Move> moves = state.getMoves();
+        assertNotNull(moves);
+        assertEquals(1, moves.size());
+        Move move = moves.toArray(new Move[1])[0];
+        assertEquals(whitePosition, move.getFrom());
+        assertEquals(new Position("h8"), move.getTo());
     }
 }

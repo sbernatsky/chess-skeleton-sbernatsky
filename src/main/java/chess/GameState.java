@@ -1,10 +1,20 @@
 package chess;
 
 
-import chess.pieces.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import chess.pieces.Bishop;
+import chess.pieces.King;
+import chess.pieces.Knight;
+import chess.pieces.Pawn;
+import chess.pieces.Piece;
+import chess.pieces.Queen;
+import chess.pieces.Rook;
 
 /**
  * Class that represents the current state of the game.  Basically, what pieces are in which positions on the
@@ -20,14 +30,7 @@ public class GameState {
     /**
      * A map of board positions to pieces at that position
      */
-    private Map<Position, Piece> positionToPieceMap;
-
-    /**
-     * Create the game state.
-     */
-    public GameState() {
-        positionToPieceMap = new HashMap<Position, Piece>();
-    }
+    private Map<Position, Piece> positionToPieceMap = new HashMap<Position, Piece>();
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -100,5 +103,22 @@ public class GameState {
      */
     private void placePiece(Piece piece, Position position) {
         positionToPieceMap.put(position, piece);
+    }
+
+    /** Returns moves available for current player */
+    public Collection<Move> getMoves() {
+        Collection<Move> result = new ArrayList<Move>();
+        for (Entry<Position, Piece> entry : positionToPieceMap.entrySet()) {
+            if (entry.getValue().getOwner() != currentPlayer) {
+                continue;
+            }
+
+            Set<Position> moves = entry.getValue().getMoves(this, entry.getKey());
+            for (Position move : moves) {
+                result.add(new Move(entry.getKey(), move));
+            }
+        }
+
+        return result;
     }
 }

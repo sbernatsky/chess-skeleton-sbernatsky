@@ -1,8 +1,13 @@
 package chess;
 
-import chess.pieces.Piece;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.Collection;
 
-import java.io.*;
+import chess.pieces.Piece;
 
 /**
  * This class provides the basic CLI interface to the Chess game.
@@ -64,13 +69,21 @@ public class CLI {
                 } else if (input.equals("board")) {
                     writeOutput("Current Game:");
                 } else if (input.equals("list")) {
-                    writeOutput("====> List Is Not Implemented (yet) <====");
+                    listMoves();
                 } else if (input.startsWith("move")) {
                     writeOutput("====> Move Is Not Implemented (yet) <====");
                 } else {
                     writeOutput("I didn't understand that.  Type 'help' for a list of commands.");
                 }
             }
+        }
+    }
+
+    private void listMoves() {
+        Collection<Move> moves = gameState.getMoves();
+        writeOutput(String.format("%s's Possible Moves (%d):", gameState.getCurrentPlayer(), moves.size()));
+        for (Move move : moves) {
+            writeOutput(String.format("\t%s %s", move.getFrom(), move.getTo()));
         }
     }
 
