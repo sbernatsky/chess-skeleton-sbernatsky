@@ -121,4 +121,37 @@ public class GameState {
 
         return result;
     }
+
+    /** Makes user move: moves piece from one location to another and changes current player. */
+    public void move(Position from, Position to) {
+        Piece piece = getPieceAt(from);
+        if (piece == null || piece.getOwner() != currentPlayer) {
+            throw new NoPieceFoundException(from);
+        }
+
+        Set<Position> moves = piece.getMoves(this, from);
+        if (!moves.contains(to)) {
+            throw new IllegalMoveException(from, to);
+        }
+
+        positionToPieceMap.remove(from);
+        placePiece(piece, to);
+        currentPlayer = (Player.White == currentPlayer) ? Player.Black : Player.White;
+    }
+
+    @SuppressWarnings("serial")
+    public static class NoPieceFoundException extends RuntimeException {
+
+        public NoPieceFoundException(Position position) {
+            super(String.format("No piece found at %s", position));
+        }
+    }
+
+    @SuppressWarnings("serial")
+    public static class IllegalMoveException extends RuntimeException {
+
+        public IllegalMoveException(Position from, Position to) {
+            super(String.format("Illegal move: %s %s", from, to));
+        }
+    }
 }

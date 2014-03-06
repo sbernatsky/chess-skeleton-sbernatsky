@@ -71,11 +71,28 @@ public class CLI {
                 } else if (input.equals("list")) {
                     listMoves();
                 } else if (input.startsWith("move")) {
-                    writeOutput("====> Move Is Not Implemented (yet) <====");
+                    makeMove(input);
                 } else {
                     writeOutput("I didn't understand that.  Type 'help' for a list of commands.");
                 }
             }
+        }
+    }
+
+    private void makeMove(String input) {
+        String[] move = input.split("\\s");
+        if (move.length != 3) {
+            writeOutput("Invalid move command");
+            return;
+        }
+
+        try {
+            Position from = new Position(move[1]);
+            Position to = new Position(move[2]);
+            gameState.move(from, to);
+        } catch (Exception e) {
+            writeOutput("Failed to make move: " + e.getMessage());
+            e.printStackTrace(outStream);
         }
     }
 

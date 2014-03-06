@@ -47,4 +47,5 @@ public abstract class Piece {
 
         return Collections.singleton(newPosition);
     }
+
 }
