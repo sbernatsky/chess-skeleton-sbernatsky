@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import chess.pieces.Bishop;
 import chess.pieces.King;
@@ -123,7 +122,7 @@ public class GameState {
                 continue;
             }
 
-            Set<Position> moves = entry.getValue().getMoves(this, entry.getKey());
+            Collection<Position> moves = entry.getValue().getMoves(this, entry.getKey());
             for (Position move : moves) {
                 result.add(new Move(entry.getKey(), move));
             }
@@ -139,7 +138,7 @@ public class GameState {
             throw new NoPieceFoundException(from);
         }
 
-        Set<Position> moves = piece.getMoves(this, from);
+        Collection<Position> moves = piece.getMoves(this, from);
         if (!moves.contains(to)) {
             throw new IllegalMoveException(from, to);
         }

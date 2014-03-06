@@ -1,9 +1,8 @@
 package chess.pieces;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import chess.GameState;
 import chess.Player;
@@ -23,7 +22,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Set<Position> getMoves(GameState state, Position position) {
+    public Collection<Position> getMoves(GameState state, Position position) {
         Position nextRow = (Player.White == getOwner())
                 ? new Position(position.getColumn(), position.getRow() + 1)
                 : new Position(position.getColumn(), position.getRow() - 1);
@@ -54,7 +53,7 @@ public class Pawn extends Piece {
             positions.add(takeRight);
         }
 
-        return new HashSet<Position>(positions);
+        return positions;
     }
 
     private boolean isInitialPosition(Position position) {

@@ -1,7 +1,7 @@
 package chess.pieces;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 
 import chess.GameState;
 import chess.Player;
@@ -33,7 +33,7 @@ public abstract class Piece {
     protected abstract char getIdentifyingCharacter();
 
     // FIXME: must be abstract method, implementations are piece-specific
-    public Set<Position> getMoves(GameState state, Position position) {
+    public Collection<Position> getMoves(GameState state, Position position) {
         return Collections.emptySet();
     }
 
