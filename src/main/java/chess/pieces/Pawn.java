@@ -22,6 +22,25 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public Collection<Position> getPositionsUnderAtack(GameState state, Position position) {
+        int nextRow = (Player.White == getOwner()) ? position.getRow() + 1 : position.getRow() - 1;
+        Position takeLeft = new Position((char) (position.getColumn() - 1), nextRow); 
+        Position takeRight = new Position((char) (position.getColumn() + 1), nextRow); 
+
+        List<Position> positions = new ArrayList<Position>();
+
+        if (takeLeft.isValid() && state.getOwnerAt(takeLeft) != null && state.getOwnerAt(takeLeft) != getOwner()) {
+            positions.add(takeLeft);
+        }
+
+        if (takeRight.isValid() && state.getOwnerAt(takeRight) != null && state.getOwnerAt(takeRight) != getOwner()) {
+            positions.add(takeRight);
+        }
+
+        return positions;
+    }
+
+    @Override
     public Collection<Position> getMoves(GameState state, Position position) {
         Position nextRow = (Player.White == getOwner())
                 ? new Position(position.getColumn(), position.getRow() + 1)
@@ -29,8 +48,6 @@ public class Pawn extends Piece {
         Position firstMoveRow = (Player.White == getOwner())
                 ? new Position(position.getColumn(), position.getRow() + 2)
                 : new Position(position.getColumn(), position.getRow() -2);
-        Position takeLeft = new Position((char) (nextRow.getColumn() - 1), nextRow.getRow()); 
-        Position takeRight = new Position((char) (nextRow.getColumn() + 1), nextRow.getRow()); 
 
         List<Position> positions = new ArrayList<Position>();
 
@@ -45,13 +62,7 @@ public class Pawn extends Piece {
             positions.add(firstMoveRow);
         }
 
-        if (takeLeft.isValid() && state.getOwnerAt(takeLeft) != null && state.getOwnerAt(takeLeft) != getOwner()) {
-            positions.add(takeLeft);
-        }
-
-        if (takeRight.isValid() && state.getOwnerAt(takeRight) != null && state.getOwnerAt(takeRight) != getOwner()) {
-            positions.add(takeRight);
-        }
+        positions.addAll(getPositionsUnderAtack(state, position));
 
         return positions;
     }

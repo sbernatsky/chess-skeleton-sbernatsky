@@ -82,6 +82,33 @@ public class GameStateTest {
         assertEquals(new Position("h8"), move.getTo());
     }
 
+    @Test
+    public void testPositionsUnderAttack() throws Exception {
+        Piece whitePiece = mock(Piece.class);
+        Piece blackPiece = mock(Piece.class);
+        Position whitePosition = new Position("a1");
+        Position blackPosition = new Position("d8");
+        
+        // put pieces into game state
+        placePiece(state, whitePiece, whitePosition);
+        placePiece(state, blackPiece, blackPosition);
+
+        when(whitePiece.getOwner()).thenReturn(Player.White);
+        when(blackPiece.getOwner()).thenReturn(Player.Black);
+        when(whitePiece.getPositionsUnderAtack(state, whitePosition)).thenReturn(Collections.singleton(new Position("h8")));
+        when(blackPiece.getPositionsUnderAtack(state, blackPosition)).thenReturn(Collections.singleton(new Position("h1")));
+
+        Collection<Position> moves = state.getPositionsUnderAttack(Player.Black);
+        assertNotNull(moves);
+        assertEquals(1, moves.size());
+        assertEquals(new Position("h1"), moves.toArray()[0]);
+
+        moves = state.getPositionsUnderAttack(Player.White);
+        assertNotNull(moves);
+        assertEquals(1, moves.size());
+        assertEquals(new Position("h8"), moves.toArray()[0]);
+    }
+
     //@Test(expected = GameState.NoPieceFoundException.class)
     @Test
     public void testMoveInvalidFrom1() throws Exception {

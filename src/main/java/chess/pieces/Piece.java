@@ -32,6 +32,12 @@ public abstract class Piece {
 
     protected abstract char getIdentifyingCharacter();
 
+    /** Returns positions under attack by this piece on specified position. */
+    public Collection<Position> getPositionsUnderAtack(GameState state, Position position) {
+        // in most cases they are the same as possible move positions (except for pawn)
+        return getMoves(state, position);
+    }
+
     // FIXME: must be abstract method, implementations are piece-specific
     public Collection<Position> getMoves(GameState state, Position position) {
         return Collections.emptySet();

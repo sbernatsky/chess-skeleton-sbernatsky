@@ -148,6 +148,22 @@ public class GameState {
         currentPlayer = (Player.White == currentPlayer) ? Player.Black : Player.White;
     }
 
+    /** Returns positions under attack for specified player. */
+    public Collection<Position> getPositionsUnderAttack(Player player) {
+        Collection<Position> result = new ArrayList<Position>();
+        for (Entry<Position, Piece> entry : positionToPieceMap.entrySet()) {
+            if (entry.getValue().getOwner() != player) {
+                continue;
+            }
+
+            Collection<Position> positions = entry.getValue().getPositionsUnderAtack(this, entry.getKey());
+            result.addAll(positions);
+        }
+
+        return result;
+    }
+
+
     @SuppressWarnings("serial")
     public static class NoPieceFoundException extends RuntimeException {
 
