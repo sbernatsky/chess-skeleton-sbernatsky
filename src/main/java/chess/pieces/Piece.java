@@ -1,7 +1,6 @@
 package chess.pieces;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import chess.GameState;
 import chess.Player;
@@ -38,9 +37,7 @@ public abstract class Piece {
         return getMoves(state, position);
     }
 
-    // FIXME: must be abstract method, implementations are piece-specific
-    public Collection<Position> getMoves(GameState state, Position position) {
-        return Collections.emptySet();
-    }
+    /** Returns all possible moves for the piece. */
+    public abstract Collection<Position> getMoves(GameState state, Position position);
 
 }
