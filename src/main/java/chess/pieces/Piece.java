@@ -34,18 +34,7 @@ public abstract class Piece {
 
     // FIXME: must be abstract method, implementations are piece-specific
     public Set<Position> getMoves(GameState state, Position position) {
-        int newRow = (Player.White == owner) ? position.getRow() + 1 : position.getRow() - 1;
-
-        if (newRow < Position.MIN_ROW || newRow > Position.MAX_ROW) {
-            return Collections.emptySet();
-        }
-
-        Position newPosition = new Position(position.getColumn(), newRow);
-        if (state.getPieceAt(newPosition) != null && state.getPieceAt(newPosition).getOwner() == owner) {
-            return Collections.emptySet();
-        }
-
-        return Collections.singleton(newPosition);
+        return Collections.emptySet();
     }
 
 }
