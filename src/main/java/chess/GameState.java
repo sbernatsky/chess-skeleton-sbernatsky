@@ -105,6 +105,16 @@ public class GameState {
         positionToPieceMap.put(position, piece);
     }
 
+    /**
+     * Get the owner at a given position on the board
+     * @param position The position to inquire about.
+     * @return The owner of a piece at that position, or null if it does not exist.
+     */
+    public Player getOwnerAt(Position position) {
+        Piece piece = getPieceAt(position);
+        return (piece != null) ? piece.getOwner() : null;
+    }
+
     /** Returns moves available for current player */
     public Collection<Move> getMoves() {
         Collection<Move> result = new ArrayList<Move>();

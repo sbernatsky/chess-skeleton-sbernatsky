@@ -38,6 +38,10 @@ public class Position {
         return column;
     }
 
+    public boolean isValid() {
+        return (column >= MIN_COLUMN) && (column <= MAX_COLUMN) && (row >= MIN_ROW) && (row <= MAX_ROW);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
