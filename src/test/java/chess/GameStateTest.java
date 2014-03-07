@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import chess.GameState.IllegalMoveException;
 import chess.GameState.NoPieceFoundException;
+import chess.pieces.King;
 import chess.pieces.Piece;
 import chess.pieces.Queen;
 import chess.pieces.Rook;
@@ -60,6 +61,7 @@ public class GameStateTest {
     @Test
     public void testMoves() throws Exception {
         Piece whitePiece = mock(Piece.class);
+        Piece whiteKing = mock(King.class);
         Piece blackPiece = mock(Piece.class);
         Position whitePosition = new Position("a1");
         Position blackPosition = new Position("d8");
@@ -67,10 +69,13 @@ public class GameStateTest {
         // put pieces into game state
         placePiece(state, whitePiece, whitePosition);
         placePiece(state, blackPiece, blackPosition);
+        placePiece(state, whiteKing, new Position("c4"));
 
         when(whitePiece.getOwner()).thenReturn(Player.White);
+        when(whiteKing.getOwner()).thenReturn(Player.White);
         when(blackPiece.getOwner()).thenReturn(Player.Black);
         when(whitePiece.getMoves(state, whitePosition)).thenReturn(Collections.singleton(new Position("h8")));
+        when(whiteKing.getMoves(state, whitePosition)).thenReturn(Collections.<Position>emptySet());
         when(blackPiece.getMoves(state, blackPosition)).thenReturn(Collections.singleton(new Position("h1")));
 
         // should be one move for white player
@@ -172,11 +177,14 @@ public class GameStateTest {
         Position from = new Position("a1");
         Position to = new Position("d8");
         Piece piece = mock(Piece.class);
-        
+        Piece whiteKing = mock(King.class);
+
         // put pieces into game state
         placePiece(state, piece, from);
+        placePiece(state, whiteKing, new Position("c4"));
 
         when(piece.getOwner()).thenReturn(Player.White);
+        when(whiteKing.getOwner()).thenReturn(Player.White);
         when(piece.getMoves(state, from)).thenReturn(Collections.singleton(to));
 
         state.move(from, to);
@@ -192,13 +200,16 @@ public class GameStateTest {
         Position to = new Position("d8");
         Piece piece = mock(Piece.class);
         Piece another = mock(Piece.class);
-        
+        Piece whiteKing = mock(King.class);
+
         // put pieces into game state
         placePiece(state, piece, from);
         placePiece(state, another, to);
+        placePiece(state, whiteKing, new Position("c4"));
 
         when(piece.getOwner()).thenReturn(Player.White);
         when(piece.getMoves(state, from)).thenReturn(Collections.singleton(to));
+        when(whiteKing.getOwner()).thenReturn(Player.White);
 
         state.move(from, to);
 

@@ -116,7 +116,9 @@ public class GameState {
 
     /** Returns moves available for current player */
     public Collection<Move> getMoves() {
-        Collection<Move> result = new ArrayList<Move>();
+        // 1. get all possible moves for current player
+        // 2. filter out moves which make current player king under attack
+        Collection<Move> tmp = new ArrayList<Move>();
         for (Entry<Position, Piece> entry : positionToPieceMap.entrySet()) {
             if (entry.getValue().getOwner() != currentPlayer) {
                 continue;
@@ -124,11 +126,53 @@ public class GameState {
 
             Collection<Position> moves = entry.getValue().getMoves(this, entry.getKey());
             for (Position move : moves) {
-                result.add(new Move(entry.getKey(), move));
+                tmp.add(new Move(entry.getKey(), move));
             }
         }
 
+        Collection<Move> result = new ArrayList<Move>();
+        for (Move move : tmp) {
+            if (checkMove(move.getFrom(), move.getTo())) {
+                result.add(move);
+            }
+        }
         return result;
+    }
+
+    /** Check if the move makes current player king to be under attack. */
+    private boolean checkMove(Position from, Position to) {
+        // 1 backup state
+        // 2 make a move
+        // 3 check if king is under attack
+        // 4 restore state
+
+        Piece piece = positionToPieceMap.remove(from);
+        Piece anotherPiece = positionToPieceMap.remove(to);
+        placePiece(piece, to);
+        Player anotherPlayer = (Player.White == currentPlayer) ? Player.Black : Player.White;
+
+        Position kingPosition = getKingPosition(currentPlayer);
+        Collection<Position> positionsUnderAttack = getPositionsUnderAttack(anotherPlayer);
+
+        positionToPieceMap.remove(to);
+        if (anotherPiece != null) {
+            placePiece(anotherPiece, to);
+        }
+        placePiece(piece, from);
+
+        return !positionsUnderAttack.contains(kingPosition);
+    }
+
+    /** Finds king position for specified player. */
+    private Position getKingPosition(Player player) {
+        for (Entry<Position, Piece> entry : positionToPieceMap.entrySet()) {
+            Piece piece = entry.getValue();
+            if (piece.getOwner() == player && piece instanceof King) {
+                return entry.getKey();
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("no king found for %s player", player));
     }
 
     /** Makes user move: moves piece from one location to another and changes current player. */
@@ -140,6 +184,10 @@ public class GameState {
 
         Collection<Position> moves = piece.getMoves(this, from);
         if (!moves.contains(to)) {
+            throw new IllegalMoveException(from, to);
+        }
+
+        if (!checkMove(from, to)) {
             throw new IllegalMoveException(from, to);
         }
 
