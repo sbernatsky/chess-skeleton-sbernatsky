@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Collection;
 
+import chess.GameState.State;
 import chess.pieces.Piece;
 
 /**
@@ -53,7 +54,15 @@ public class CLI {
 
         while (true) {
             showBoard();
-            writeOutput(gameState.getCurrentPlayer() + "'s Move");
+            State playerState = gameState.getPlayerState();
+            if (playerState == State.Normal) {
+                writeOutput(String.format("%s's Move", gameState.getCurrentPlayer()));
+            } else if (playerState == State.Check) {
+                writeOutput(String.format("%s's Move (you are under check)", gameState.getCurrentPlayer()));
+            } else { // playerState == State.Checkmate
+                Player previousPlayer = (Player.White == gameState.getCurrentPlayer()) ? Player.Black : Player.White;
+                writeOutput(String.format("The game is over. Congrats to %s", previousPlayer));
+            }
 
             String input = getInput();
             if (input == null) {

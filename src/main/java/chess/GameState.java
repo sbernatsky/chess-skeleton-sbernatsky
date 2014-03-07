@@ -149,10 +149,8 @@ public class GameState {
         Piece piece = positionToPieceMap.remove(from);
         Piece anotherPiece = positionToPieceMap.remove(to);
         placePiece(piece, to);
-        Player anotherPlayer = (Player.White == currentPlayer) ? Player.Black : Player.White;
 
-        Position kingPosition = getKingPosition(currentPlayer);
-        Collection<Position> positionsUnderAttack = getPositionsUnderAttack(anotherPlayer);
+        boolean result = !isKingUnderAttack(currentPlayer);
 
         positionToPieceMap.remove(to);
         if (anotherPiece != null) {
@@ -160,7 +158,14 @@ public class GameState {
         }
         placePiece(piece, from);
 
-        return !positionsUnderAttack.contains(kingPosition);
+        return result;
+    }
+
+    private boolean isKingUnderAttack(Player player) {
+        Player anotherPlayer = (Player.White == player) ? Player.Black : Player.White;
+        Position kingPosition = getKingPosition(player);
+        Collection<Position> positionsUnderAttack = getPositionsUnderAttack(anotherPlayer);
+        return positionsUnderAttack.contains(kingPosition);
     }
 
     /** Finds king position for specified player. */
@@ -173,6 +178,19 @@ public class GameState {
         }
 
         throw new IllegalArgumentException(String.format("no king found for %s player", player));
+    }
+
+    /** Returns state for the current player. */
+    public State getPlayerState() {
+        // check if king for current player is under check
+        // if it is check if current player has legal moves
+        State result = isKingUnderAttack(currentPlayer) ? State.Check : State.Normal;
+        if (result == State.Check) {
+            if (getMoves().isEmpty()) {
+                result = State.Checkmate;
+            }
+        }
+        return result;
     }
 
     /** Makes user move: moves piece from one location to another and changes current player. */
@@ -226,5 +244,9 @@ public class GameState {
         public IllegalMoveException(Position from, Position to) {
             super(String.format("Illegal move: %s %s", from, to));
         }
+    }
+
+    public static enum State {
+        Normal, Check, Checkmate;
     }
 }
