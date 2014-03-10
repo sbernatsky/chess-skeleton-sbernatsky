@@ -189,6 +189,10 @@ public class GameState {
             if (getMoves().isEmpty()) {
                 result = State.Checkmate;
             }
+        } else {
+            if (getMoves().isEmpty()) {
+                result = State.Draw;
+            }
         }
         return result;
     }
@@ -247,6 +251,6 @@ public class GameState {
     }
 
     public static enum State {
-        Normal, Check, Checkmate;
+        Normal, Check, Draw, Checkmate;
     }
 }

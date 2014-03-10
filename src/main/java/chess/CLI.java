@@ -59,6 +59,8 @@ public class CLI {
                 writeOutput(String.format("%s's Move", gameState.getCurrentPlayer()));
             } else if (playerState == State.Check) {
                 writeOutput(String.format("%s's Move (your king is in check)", gameState.getCurrentPlayer()));
+            } else if (playerState == State.Draw) {
+                writeOutput("The game is over. It's draw.");
             } else { // playerState == State.Checkmate
                 Player previousPlayer = (Player.White == gameState.getCurrentPlayer()) ? Player.Black : Player.White;
                 writeOutput(String.format("The game is over. Congrats to %s", previousPlayer));
